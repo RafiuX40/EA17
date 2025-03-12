@@ -1,14 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { TaskService, Task } from '../task.service';
 
-interface Task {
-  id: number;
-  text: string;
-  completed: boolean;
-  dueDate: string;
-}
 
 @Component({
   selector: 'app-home',
@@ -17,66 +12,53 @@ interface Task {
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule]
 })
-export class HomePage {
+export class HomePage implements OnInit {
   tasks: Task[] = [];
   newTask: string = '';
   dueDate: string = '';
+  today: string = new Date().toISOString();
   showError: boolean = false;
   errorMessage: string = '';
-  today: string = new Date().toISOString();
 
-  constructor() {}
+  constructor(private taskService: TaskService) {}
 
-  validateTask(): boolean {
-    if (!this.newTask.trim()) {
-      this.errorMessage = 'El nombre de la tarea es requerido';
-      this.showError = true;
-      return false;
-    }
-    if (!this.dueDate) {
-      this.errorMessage = 'La fecha de entrega es requerida';
-      this.showError = true;
-      return false;
-    }
-    this.showError = false;
-    this.errorMessage = '';
-    return true;
+  ngOnInit() {
+    this.getTasks();
+  }
+
+  getTasks() {
+    this.taskService.getTasks().subscribe((tasks) => {
+      this.tasks = tasks;
+    });
   }
 
   addTask() {
-    if (!this.validateTask()) return;
+    if (!this.newTask.trim()) {
+      this.showError = true;
+      this.errorMessage = 'La tarea no puede estar vacía';
+      return;
+    }
 
+    this.showError = false;
     const task: Task = {
-      id: Date.now(),
-      text: this.newTask.trim(),
+      id: '',
+      title: this.newTask,
       completed: false,
       dueDate: this.dueDate
     };
 
-    this.tasks.push(task);
-    this.resetForm();
-  }
-
-  resetForm() {
-    this.newTask = '';
-    this.dueDate = '';
-    this.showError = false;
-    this.errorMessage = '';
+    this.taskService.addTask(task).then(() => {
+      this.newTask = '';
+      this.dueDate = '';
+    });
   }
 
   toggleTask(task: Task) {
-    task.completed = !task.completed;
+    this.taskService.updateTask(task.id, { completed: task.completed });
   }
 
   deleteTask(task: Task) {
-    this.tasks = this.tasks.filter(t => t.id !== task.id);
-  }
-
-  getTaskStatus(task: Task): string {
-    if (task.completed) return 'completed';
-    const dueDate = new Date(task.dueDate);
-    const today = new Date();
-    return dueDate < today ? 'overdue' : '';
+    this.taskService.deleteTask(task.id);
   }
 
   onDateChange(event: any) {

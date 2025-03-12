@@ -48,7 +48,7 @@
         [(ngModel)]="task.completed"
         (ionChange)="toggleTask(task)">
       </ion-checkbox>
-      <span>{{ task.text }}</span>
+      <span>{{ task.title }}</span>
       <div class="fecha">
         Fecha: {{ task.dueDate | date:'dd/MM/yyyy' }}
       </div>
