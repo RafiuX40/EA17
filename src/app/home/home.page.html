@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="titulo">
+      Mi Lista de Tareas
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="mi-tarjeta">
+    <form (ngSubmit)="addTask()" #taskForm="ngForm" class="formulario">
+      <ion-item>
+        <ion-label>Tarea:</ion-label>
+        <ion-input
+          [(ngModel)]="newTask"
+          name="taskText"
+          required
+          type="text">
+        </ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Fecha:</ion-label>
+        <ion-datetime
+          [(ngModel)]="dueDate"
+          name="dueDate"
+          [min]="today"
+          (ionChange)="onDateChange($event)"
+          [showDefaultButtons]="true">
+        </ion-datetime>
+      </ion-item>
+
+      <div *ngIf="showError" class="mensaje-error">
+        {{ errorMessage }}
+      </div>
+
+      <button class="boton-agregar" type="submit">
+        AGREGAR TAREA
+      </button>
+    </form>
+  </div>
+
+  <div class="lista-tareas">
+    <div *ngFor="let task of tasks" 
+         class="tarea"
+         [class.completada]="task.completed">
+      <ion-checkbox
+        [(ngModel)]="task.completed"
+        (ionChange)="toggleTask(task)">
+      </ion-checkbox>
+      <span>{{ task.text }}</span>
+      <div class="fecha">
+        Fecha: {{ task.dueDate | date:'dd/MM/yyyy' }}
+      </div>
+      <ion-button color="danger" (click)="deleteTask(task)">
+        Borrar
+      </ion-button>
+    </div>
+  </div>
+
+  <div *ngIf="tasks.length === 0" style="text-align: center; margin-top: 20px;">
+    <p>No hay tareas todavía</p>
+  </div>
+</ion-content>

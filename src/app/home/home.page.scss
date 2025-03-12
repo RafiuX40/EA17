@@ -1,0 +1,55 @@
+.titulo {
+  background-color: #ff0000;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+.mi-tarjeta {
+  background: #ffffff;
+  margin: 20px;
+  padding: 15px;
+}
+
+.formulario {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+  input {
+    width: 100%;
+    padding: 5px;
+  }
+}
+
+.boton-agregar {
+  background: blue;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.lista-tareas {
+  margin: 15px;
+}
+
+.tarea {
+  border: 1px solid #cccccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f0f0f0;
+
+  &.completada {
+    background-color: #90EE90;
+  }
+}
+
+.mensaje-error {
+  color: red;
+  font-size: 14px;
+}
+
+.fecha {
+  color: blue;
+  font-weight: bold;
+}
